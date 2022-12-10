@@ -1,0 +1,20 @@
+{
+  "name": "study-javascript",
+  "version": "1.0.0",
+  "description": "김민태의 프론트엔드 아카데미 : 제 1강 JavaScript &amp; TypeScript Essential",
+  "main": "index.js",
+  "scripts": {
+    "start-ch1": "parcel study-note/1.hacker-news/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmdals9974/study-javascript.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tmdals9974/study-javascript/issues"
+  },
+  "homepage": "https://github.com/tmdals9974/study-javascript#readme"
+}
