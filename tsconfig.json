@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": true, //엄격모드 ON                     - false로 할 경우 매우 느슨해짐. 보통 js -> ts로 마이그레이션 할 때 false를 사용함.
+    "target": "ES5",
+    "module": "CommonJS",
+    "alwaysStrict": true, //"use strict" 항상 사용    - 성능을 향상시키고 일련의 오류를 자동으로 무시하지 않고 던지도록 한다.
+    "noImplicitAny": true, //Any 타입 사용 불가       - 보통 js -> ts로 마이그레이션 할 때 false를 사용함.
+    "noImplicitThis": true, //Any 타입으로 구현된 'this' 표현식 에러처리 여부
+    "sourceMap": true,
+    "downlevelIteration": true //for-of, Spread operator 등 es6에서 부터 지원되는 반복문을 js에서 지원할 수 있도록 컴파일 하는 옵션. (target이 ES5일때)
+  }
+}
