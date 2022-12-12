@@ -1,31 +1,31 @@
-type Store = {
+interface Store {
   currentPage: number;
   feeds: NewsFeed[];
-};
-
-type News=  {
-  id: number;
-  time_ago: string;
-  title: string;
-  url: string;
-  user: string;
-  content: string;
 }
 
-type NewsFeed = News & {
-  comments_count: number;
-  points: number;
+interface News {
+  readonly id: number;
+  readonly time_ago: string;
+  readonly title: string;
+  readonly url: string;
+  readonly user: string;
+  readonly content: string;
+};
+
+interface NewsFeed extends News {
+  readonly comments_count: number;
+  readonly points: number;
   read?: boolean;
 };
 
-type NewsDetail = News & {
-  comments: NewsComment[];
-}
+interface NewsDetail extends News {
+  readonly comments: NewsComment[];
+};
 
-type NewsComment = News & {
-  comments: NewsComment[];
-  level: number;
-}
+interface NewsComment extends News {
+  readonly comments: NewsComment[];
+  readonly level: number;
+};
 
 const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
 const CONTENT_URL = "https://api.hnpwa.com/v0/item/@id.json";
@@ -115,8 +115,14 @@ function newsFeed(): void {
   }
 
   template = template.replace("{{__news_feed__}}", newsList.join(""));
-  template = template.replace("{{__prev_page__}}", String(store.currentPage > 1 ? store.currentPage - 1 : 1));
-  template = template.replace("{{__next_page__}}", String(store.currentPage + 1));
+  template = template.replace(
+    "{{__prev_page__}}",
+    String(store.currentPage > 1 ? store.currentPage - 1 : 1)
+  );
+  template = template.replace(
+    "{{__next_page__}}",
+    String(store.currentPage + 1)
+  );
 
   updateView(template);
 }
@@ -160,14 +166,16 @@ function newsDetail(): void {
     }
   }
 
-  updateView(template.replace("{{__comments__}}", makeComment(newsContent.comments)));
+  updateView(
+    template.replace("{{__comments__}}", makeComment(newsContent.comments))
+  );
 }
 
 function makeComment(comments: NewsComment[]): string {
   const commentString = [];
 
   for (let i = 0; i < comments.length; i++) {
-  const comment: NewsComment = comments[i];
+    const comment: NewsComment = comments[i];
 
     commentString.push(`
       <div style="padding-left: ${comment.level * 40}px;" class="mt-4">
@@ -186,7 +194,6 @@ function makeComment(comments: NewsComment[]): string {
 
   return commentString.join("");
 }
-
 
 function router(): void {
   const routePath = location.hash;
