@@ -10,22 +10,22 @@ interface News {
   readonly url: string;
   readonly user: string;
   readonly content: string;
-};
+}
 
 interface NewsFeed extends News {
   readonly comments_count: number;
   readonly points: number;
   read?: boolean;
-};
+}
 
 interface NewsDetail extends News {
   readonly comments: NewsComment[];
-};
+}
 
 interface NewsComment extends News {
   readonly comments: NewsComment[];
   readonly level: number;
-};
+}
 
 const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
 const CONTENT_URL = "https://api.hnpwa.com/v0/item/@id.json";
@@ -35,20 +35,6 @@ const store: Store = {
   currentPage: 1,
   feeds: [],
 };
-
-// 타입스크립트 공식문서에서도 소개되고있는 믹스인 함수
-// baseClasses에 제공된 class를 targetClass에 합성시키는 역할
-function applyApiMixins(targetClass: any, baseClasses: any[]): void {
-  baseClasses.forEach((baseClass) => {
-    Object.getOwnPropertyNames(baseClass.prototype).forEach((name) => {
-      const descriptor = Object.getOwnPropertyDescriptor(baseClass.prototype, name);
-
-      if (descriptor) {
-        Object.defineProperty(targetClass.prototype, name, descriptor);
-      }
-    });
-  });
-}
 
 class Api {
   getRequest<AjaxResponse>(url: string): AjaxResponse {
@@ -71,6 +57,28 @@ class NewsDetailApi {
     return this.getRequest<NewsDetail>(CONTENT_URL.replace("@id", id));
   }
 }
+
+/* 타입스크립트 공식문서에서도 소개되고있는 믹스인 함수
+  * baseClasses에 제공된 class를 targetClass에 합성시키는 역할
+  ? class extends를 사용하지 않고 mixin을 사용하는 이유
+  ** 1. 상속관계를 바꾸려면 전체 코드를 수정해야함. 유연성이 없음.
+  ** 2. extends는 다중 상속을 지원하지 않음.
+*/
+
+function applyApiMixins(targetClass: any, baseClasses: any[]): void {
+  baseClasses.forEach((baseClass) => {
+    Object.getOwnPropertyNames(baseClass.prototype).forEach((name) => {
+      const descriptor = Object.getOwnPropertyDescriptor(baseClass.prototype, name);
+
+      if (descriptor) {
+        Object.defineProperty(targetClass.prototype, name, descriptor);
+      }
+    });
+  });
+}
+
+interface NewsFeedApi extends Api {};
+interface NewsDetailApi extends Api {};
 
 applyApiMixins(NewsFeedApi, [Api]);
 applyApiMixins(NewsDetailApi, [Api]);
