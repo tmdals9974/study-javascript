@@ -27,6 +27,11 @@ interface NewsComment extends News {
   readonly level: number;
 }
 
+interface RouteInfo {
+  path: string;
+  page: View;
+}
+
 const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
 const CONTENT_URL = "https://api.hnpwa.com/v0/item/@id.json";
 const ajax: XMLHttpRequest = new XMLHttpRequest();
@@ -82,11 +87,11 @@ interface NewsDetailApi extends Api {}
 applyApiMixins(NewsFeedApi, [Api]);
 applyApiMixins(NewsDetailApi, [Api]);
 
-class View {
-  template: string;
-  renderTemplate: string;
-  container: HTMLElement;
-  htmlList: string[];
+abstract class View {
+  private template: string;
+  private renderTemplate: string;
+  private container: HTMLElement;
+  private htmlList: string[];
 
   constructor(containerId: string, template: string) {
     const containerElement = document.getElementById(containerId);
@@ -101,33 +106,70 @@ class View {
     this.htmlList = [];
   }
 
-  updateView(): void {
+  protected updateView(): void {
     this.container.innerHTML = this.renderTemplate;
     this.renderTemplate = this.template;
   }
 
-  addHtml(htmlString: string): void {
+  protected addHtml(htmlString: string): void {
     this.htmlList.push(htmlString);
   }
 
-  getHtml(): string {
+  protected getHtml(): string {
     const snapshot = this.htmlList.join("");
     this.clearHtmlList();
     return snapshot;
   }
 
-  setTemplateData(key: string, value: string): void {
+  protected setTemplateData(key: string, value: string): void {
     this.renderTemplate = this.renderTemplate.replace(`{{__${key}__}}`, value);
   }
 
-  clearHtmlList(): void {
+  private clearHtmlList(): void {
     this.htmlList = [];
+  }
+
+  abstract render(): void;
+}
+
+class Router {
+  private routeTable: RouteInfo[];
+  private defaultRoute: RouteInfo | null;
+
+  constructor() {
+    window.addEventListener("hashchange", this.route.bind(this));
+
+    this.routeTable = [];
+    this.defaultRoute = null;
+  }
+
+  setDefaultPage(page: View): void {
+    this.defaultRoute = { path: "", page };
+  }
+
+  addRoutePath(path: string, page: View): void {
+    this.routeTable.push({ path, page });
+  }
+
+  route() {
+    const routePath = location.hash;
+
+    if (routePath === '' && this.defaultRoute) {
+      this.defaultRoute.page.render();
+    }
+
+    for (const routeInfo of this.routeTable) {
+      if (routePath.indexOf(routeInfo.path) >= 0) {
+        routeInfo.page.render();
+        break;
+      }
+    }
   }
 }
 
 class NewsFeedView extends View {
-  api: NewsFeedApi;
-  feeds: NewsFeed[];
+  private api: NewsFeedApi;
+  private feeds: NewsFeed[];
 
   constructor(containerId: string) {
     let template = `
@@ -167,6 +209,8 @@ class NewsFeedView extends View {
   }
 
   render(): void {
+    store.currentPage = Number(location.hash.substring(7) || 1);
+
     for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
       const { id, title, comments_count, user, points, time_ago, read } = this.feeds[i];
 
@@ -200,7 +244,7 @@ class NewsFeedView extends View {
     this.updateView();
   }
 
-  makeFeeds(): void {
+  private makeFeeds(): void {
     for (let i = 0; i < this.feeds.length; i++) {
       this.feeds[i].read = false;
     }
@@ -261,7 +305,7 @@ class NewsDetailView extends View {
     this.updateView();
   }
 
-  makeComment(comments: NewsComment[]): string {
+  private makeComment(comments: NewsComment[]): string {
     for (let i = 0; i < comments.length; i++) {
       const comment: NewsComment = comments[i];
 
@@ -284,19 +328,13 @@ class NewsDetailView extends View {
   }
 }
 
-function router(): void {
-  const routePath = location.hash;
+const router: Router = new Router();
+const newsFeedView = new NewsFeedView("root");
+const newsDetailView = new NewsDetailView("root");
 
-  if (routePath === "") {
-    newsFeed();
-  } else if (routePath.indexOf("#/page/") >= 0) {
-    store.currentPage = Number(routePath.substr(7));
-    newsFeed();
-  } else {
-    newsDetail();
-  }
-}
+router.setDefaultPage(newsFeedView);
 
-window.addEventListener("hashchange", router);
+router.addRoutePath("/page/", newsFeedView);
+router.addRoutePath("/show/", newsDetailView);
 
-router();
+router.route();
