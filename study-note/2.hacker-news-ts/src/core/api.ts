@@ -2,20 +2,21 @@ import { NEWS_URL, CONTENT_URL } from "../config";
 import { NewsFeed, NewsDetail } from "../types";
 
 export class Api {
-  ajax: XMLHttpRequest;
+  xhr: XMLHttpRequest;
   url: string;
 
   constructor(url: string) {
-    this.ajax = new XMLHttpRequest();
+    this.xhr = new XMLHttpRequest();
     this.url = url;
   }
 
   getRequest<AjaxResponse>(cb: (data: AjaxResponse) => void): void {
-    this.ajax.open("GET", this.url);
-    this.ajax.addEventListener('load', () => {
-      cb(JSON.parse(this.ajax.response) as AjaxResponse);
-    });
-    this.ajax.send();
+    fetch(this.url)
+      .then((response) => response.json()) // ! 기존 JSON.parse는 동기적이어서 UI가 업데이트 되지 못하였으나, fetch의 response.json 함수는 비동기여서 필수적으로 사용.
+      .then(cb)
+      .catch(() => {
+        console.error("데이터를 불러오지 못했습니다.");
+      });
   }
 }
 
