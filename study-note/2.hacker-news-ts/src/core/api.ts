@@ -10,13 +10,9 @@ export class Api {
     this.url = url;
   }
 
-  getRequest<AjaxResponse>(cb: (data: AjaxResponse) => void): void {
-    fetch(this.url)
-      .then((response) => response.json()) // ! 기존 JSON.parse는 동기적이어서 UI가 업데이트 되지 못하였으나, fetch의 response.json 함수는 비동기여서 필수적으로 사용.
-      .then(cb)
-      .catch(() => {
-        console.error("데이터를 불러오지 못했습니다.");
-      });
+  async request<AjaxResponse>(): Promise<AjaxResponse> {
+    const response = await fetch(this.url)
+    return await response.json() as AjaxResponse; // ! 기존 JSON.parse는 동기적이어서 UI가 업데이트 되지 못하였으나, fetch의 response.json 함수는 비동기여서 필수적으로 사용.
   }
 }
 
@@ -25,8 +21,8 @@ export class NewsFeedApi extends Api {
     super(NEWS_URL);
   }
 
-  getData(cb: (data: NewsFeed[]) => void): void {
-    return this.getRequest<NewsFeed[]>(cb);
+  async getData(): Promise<NewsFeed[]> {
+    return this.request<NewsFeed[]>();
   }
 }
 
@@ -35,8 +31,8 @@ export class NewsDetailApi extends Api {
     super(CONTENT_URL.replace("@id", id));
   }
 
-  getData(cb: (data: NewsDetail) => void): void {
-    return this.getRequest<NewsDetail>(cb);
+  async getData(): Promise<NewsDetail> {
+    return this.request<NewsDetail>();
   }
 }
 
