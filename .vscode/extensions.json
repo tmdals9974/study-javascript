@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "wallabyjs.quokka-vscode",
+    "aaron-bond.better-comments",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "rbbit.typescript-hero"
+  ]
+}
