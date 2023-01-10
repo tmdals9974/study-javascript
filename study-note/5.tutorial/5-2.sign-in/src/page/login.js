@@ -44,6 +44,7 @@ export default class Login {
         const options = { headers: { token } };
         this.#data.store.token = token;
 
+        //* async, await을 이용하여 axios depth 문제 해결 가능s 
         axios.all([
           axios.get(`/api/user/${id}`, options),
           axios.get(`/api/user/${id}/posts`, options),

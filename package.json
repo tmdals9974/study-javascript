@@ -7,7 +7,8 @@
     "start-ch3": "parcel study-note/3.hacker-news/index.html",
     "start-ch4": "parcel study-note/4.hacker-news-ts/index.html",
     "start-ch5-1": "parcel study-note/5.tutorial/5-1.sign-up/index.html",
-    "start-ch5-2": "parcel study-note/5.tutorial/5-2.sign-in/index.html"
+    "start-ch5-2": "parcel study-note/5.tutorial/5-2.sign-in/index.html",
+    "start-ch5-2-server": "node study-note/5.tutorial/5-2.sign-in/server/index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,11 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "axios": "^1.2.2"
+    "@types/body-parser": "^1.19.2",
+    "axios": "^1.2.2",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
+    "morgan": "^1.10.0"
   }
 }
