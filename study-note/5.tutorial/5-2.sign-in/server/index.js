@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const cors = require('cors')
 const morgan = require('morgan');
 const { urlencoded, json } = require('body-parser');
 const { v4 } = require('uuid');
@@ -10,6 +11,7 @@ app.use(express.static('dist'));
 app.use(morgan('dev'));
 app.use(urlencoded({ extended: false }))
 app.use(json())
+app.use(cors());
 
 app.get('/api/user/:id', (req, res) => {
   if (!req.headers['token']) {
