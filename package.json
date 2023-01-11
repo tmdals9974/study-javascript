@@ -8,7 +8,8 @@
     "start-ch4": "parcel study-note/4.hacker-news-ts/index.html",
     "start-ch5-1": "parcel study-note/5.tutorial/5-1.sign-up/index.html",
     "start-ch5-2": "parcel study-note/5.tutorial/5-2.sign-in/index.html",
-    "start-ch5-2-server": "node study-note/5.tutorial/5-2.sign-in/server/index.js"
+    "start-ch5-2-server": "node study-note/5.tutorial/5-2.sign-in/server/index.js",
+    "start-ch5-3": "parcel study-note/5.tutorial/5-3.chart/index.html"
   },
   "repository": {
     "type": "git",
