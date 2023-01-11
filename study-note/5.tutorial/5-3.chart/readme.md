@@ -1,4 +1,7 @@
 # 차트 라이브러리 만들어보기
+  - 2D 그래픽은 Canvas를 이용하여 사용 가능.
+  - CSS는 Canvas를 추상화함.
+  - 3D 그래픽은 WebGL을 이용하여 사용 가능하며, GPU를 사용가능.
 
 ## Reference
 * https://dev.to/kaykaycodes/7-days-of-css-graphics-and-animations-15e4
